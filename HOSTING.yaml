@@ -1,0 +1,105 @@
+name: pure_midhun
+services:
+  adminer:
+    cpu_shares: 90
+    command: []
+    container_name: adminer
+    depends_on:
+      db:
+        condition: service_started
+        required: true
+    deploy:
+      resources:
+        limits:
+          memory: 1006M
+    hostname: adminer
+    image: adminer:4.8.1
+    labels:
+      icon: https://raw.githubusercontent.com/mardianto88/icon/main/data-hosting.256x183.png
+    ports:
+      - target: 8080
+        published: "8080"
+        protocol: tcp
+    restart: unless-stopped
+    volumes: []
+    devices: []
+    cap_add: []
+    environment: []
+    network_mode: bridge
+    privileged: false
+  db:
+    cpu_shares: 90
+    command: []
+    container_name: mariadb
+    deploy:
+      resources:
+        limits:
+          memory: 1006M
+    environment:
+      - MYSQL_DATABASE=casaos
+      - MYSQL_PASSWORD=casaos
+      - MYSQL_ROOT_PASSWORD=casaos
+      - MYSQL_USER=casaos
+      - PGID=1000
+      - PUID=1000
+      - REMOTE_SQL=
+      - TZ=Etc/UTC
+    hostname: mariadb
+    image: mariadb:latest
+    labels:
+      icon: https://raw.githubusercontent.com/mardianto88/icon/main/data-hosting.256x183.png
+    ports:
+      - target: 3306
+        published: "3306"
+        protocol: tcp
+    privileged: true
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: /tmp/casaos-compose-app-3135054565/mysql
+        target: /var/lib/mysql
+    devices: []
+    cap_add: []
+    network_mode: bridge
+  web:
+    cpu_shares: 90
+    command: []
+    container_name: php
+    depends_on:
+      db:
+        condition: service_started
+        required: true
+    deploy:
+      resources:
+        limits:
+          memory: 1006M
+    hostname: php
+    image: php:8.2-apache
+    labels:
+      icon: https://raw.githubusercontent.com/mardianto88/icon/main/data-hosting.256x183.png
+    ports:
+      - target: 80
+        published: "7010"
+        protocol: tcp
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: /tmp/casaos-compose-app-3135054565/app
+        target: /var/www/html
+    devices: []
+    cap_add: []
+    environment: []
+    network_mode: bridge
+    privileged: false
+x-casaos:
+  author: self
+  category: self
+  hostname: ""
+  icon: https://raw.githubusercontent.com/mardianto88/icon/main/data-hosting.256x183.png
+  index: /
+  is_uncontrolled: false
+  port_map: "8080"
+  scheme: http
+  store_app_id: pure_midhun
+  title:
+    custom: HOSTING
